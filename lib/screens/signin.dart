@@ -64,13 +64,14 @@ class _SigninScreenState extends State<SigninScreen> {
       controller: passwordController,
       obscureText: true,
       validator: (value) {
-        RegExp regex = new RegExp(r'^.{6,}$');
+        RegExp regex = RegExp(r'^.{6,}$');
         if (value!.isEmpty) {
           return ("Password is required for login");
         }
         if (!regex.hasMatch(value)) {
           return ("Please Enter Valid Password(Minimum 6 characters)");
         }
+        return null;
       },
       onSaved: (value) => passwordController.text = value!,
       textInputAction: TextInputAction.done,

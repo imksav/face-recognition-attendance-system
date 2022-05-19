@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -12,11 +14,44 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  User? user = FirebaseAuth.instance.currentUser;
+  UserModel loggedInUser = UserModel();
+
+  @override
+  void initState() {
+    super.initState();
+    FirebaseFirestore.instance
+        .collection("users")
+        .doc(user!.uid)
+        .get()
+        .then((value) {
+      this.loggedInUser = UserModel.fromMap(value.data());
+      setState(() {});
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final screenheight = MediaQuery.of(context).size.height;
     return Scaffold(
-      appBar: const CustomAppBar(),
+      appBar: AppBar(
+        backgroundColor: Colors.blue,
+        elevation: 0.0,
+        leading: IconButton(
+          onPressed: () {},
+          icon: const Icon(Icons.menu),
+          iconSize: 28.0,
+        ),
+        actions: <Widget>[
+          IconButton(
+            onPressed: () {
+              logout(context);
+            },
+            icon: const Icon(Icons.logout_rounded),
+            iconSize: 28.0,
+          ),
+        ],
+      ),
       body: SafeArea(
         child: Column(
           children: [
@@ -91,7 +126,7 @@ class _HomeScreenState extends State<HomeScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  "Hi, Keshav Bhandari",
+                  "Hi, ${loggedInUser.firstName} ${loggedInUser.secondName}",
                   style: GoogleFonts.aBeeZee(
                     textStyle: Styles.titleTextStyle,
                   ),
@@ -144,5 +179,12 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
     );
+  }
+
+  Future<void> logout(BuildContext context) async {
+    await FirebaseAuth.instance.signOut();
+    // ignore: use_build_context_synchronously
+    Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (context) => const SigninScreen()));
   }
 }
