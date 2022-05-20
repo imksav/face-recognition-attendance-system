@@ -1,6 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 
 import '../libraries.dart';
 
@@ -88,14 +87,30 @@ class _SigninScreenState extends State<SigninScreen> {
         minWidth: MediaQuery.of(context).size.width,
         child: const Text(
           "Log In",
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          style: TextStyle(
+              color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20.0),
         ),
         onPressed: () {
           signIn(emailController.text, passwordController.text);
         },
       ),
     );
-
+    final forgetPassword = GestureDetector(
+      child: const Text(
+        "Forget Password?",
+        style: TextStyle(
+            decoration: TextDecoration.underline,
+            color: Colors.redAccent,
+            fontSize: 18.0,
+            fontWeight: FontWeight.bold),
+      ),
+      onTap: () {
+        Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+                builder: (context) => const ForgetPasswordPage()));
+      },
+    );
     return Scaffold(
       backgroundColor: Colors.white,
       body: Center(
@@ -124,6 +139,8 @@ class _SigninScreenState extends State<SigninScreen> {
                       const SizedBox(height: 20.0),
                       loginButton,
                       const SizedBox(height: 20.0),
+                      forgetPassword,
+                      const SizedBox(height: 20.0),
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -135,6 +152,8 @@ class _SigninScreenState extends State<SigninScreen> {
                               "Sign Up",
                               style: TextStyle(
                                   fontWeight: FontWeight.bold,
+                                  fontSize: 18.0,
+                                  decoration: TextDecoration.underline,
                                   color: Colors.blue),
                             ),
                             onTap: () {
@@ -163,14 +182,52 @@ class _SigninScreenState extends State<SigninScreen> {
       await _auth
           .signInWithEmailAndPassword(email: email, password: password)
           .then((uid) => {
-                Fluttertoast.showToast(msg: "Login Successful"),
-                Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const BottomNavScreen()))
+                showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: const Text("Success Message"),
+                        content: const Text("Login Successful"),
+                        backgroundColor: Colors.green,
+                        actions: [
+                          IconButton(
+                              onPressed: () {
+                                Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            const BottomNavScreen()));
+                              },
+                              icon: const Icon(
+                                Icons.close,
+                                size: 40.0,
+                              ))
+                        ],
+                      );
+                    }),
+
+                // ScaffoldMessenger.of(context).showSnackBar(
+                //     const SnackBar(content: Text("Login Successfull"))),
+                // Fluttertoast.showToast(msg: "Login Successful"),
               })
           .catchError((e) {
-        Fluttertoast.showToast(msg: e!.message);
+        showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: const Text("Error Message"),
+                content: Text(e!.message),
+                backgroundColor: Colors.red,
+                actions: [
+                  IconButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      icon: const Icon(Icons.exit_to_app))
+                ],
+              );
+            });
+        // Fluttertoast.showToast(msg: e!.message);
       });
     }
   }

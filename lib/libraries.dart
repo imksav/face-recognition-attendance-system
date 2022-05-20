@@ -12,3 +12,4 @@ export 'package:attendanceapp/widgets/my_flat_button.dart';
 export 'package:attendanceapp/constants/platette.dart';
 export 'package:attendanceapp/constants/styles.dart';
 export 'models/user_model.dart';
+export 'screens/forgetpassword.dart';

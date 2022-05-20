@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -45,7 +47,27 @@ class _HomeScreenState extends State<HomeScreen> {
         actions: <Widget>[
           IconButton(
             onPressed: () {
-              logout(context);
+              showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: const Text("Alert Message"),
+                      content: const Text("Do you want to logout?"),
+                      backgroundColor: Colors.green,
+                      actions: [
+                        FlatButton(
+                            onPressed: () {
+                              logout(context);
+                            },
+                            child: const Text("Yes")),
+                        FlatButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            child: const Text("No")),
+                      ],
+                    );
+                  });
             },
             icon: const Icon(Icons.logout_rounded),
             iconSize: 28.0,

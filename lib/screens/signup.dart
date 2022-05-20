@@ -232,6 +232,8 @@ class _SignupScreenState extends State<SignupScreen> {
                               "Sign In",
                               style: TextStyle(
                                   fontWeight: FontWeight.bold,
+                                  fontSize: 18.0,
+                                  decoration: TextDecoration.underline,
                                   color: Colors.blue),
                             ),
                             onTap: () {
@@ -259,7 +261,23 @@ class _SignupScreenState extends State<SignupScreen> {
           .createUserWithEmailAndPassword(email: email, password: password)
           .then((value) => {postDetailsToFirestore()})
           .catchError((e) {
-        Fluttertoast.showToast(msg: e!.message);
+        showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: const Text("Error Message"),
+                content: Text(e!.message),
+                backgroundColor: Colors.red,
+                actions: [
+                  IconButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      icon: const Icon(Icons.close))
+                ],
+              );
+            });
+        // Fluttertoast.showToast(msg: e!.message);
       });
     }
   }
@@ -280,11 +298,30 @@ class _SignupScreenState extends State<SignupScreen> {
         .collection("users")
         .doc(user.uid)
         .set(userModel.toMap());
-    Fluttertoast.showToast(msg: "Account created successfully");
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text("Success Message"),
+            content: const Text("Account created successfully"),
+            backgroundColor: Colors.green,
+            actions: [
+              IconButton(
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const SignupScreen()));
+                  },
+                  icon: const Icon(Icons.exit_to_app))
+            ],
+          );
+        });
+    // Fluttertoast.showToast(msg: "Account created successfully");
 
-    Navigator.pushAndRemoveUntil(
-        (context),
-        MaterialPageRoute(builder: (context) => const HomeScreen()),
-        (route) => false);
+    // Navigator.pushAndRemoveUntil(
+    //     (context),
+    //     MaterialPageRoute(builder: (context) => const BottomNavScreen()),
+    //     (route) => false);
   }
 }
