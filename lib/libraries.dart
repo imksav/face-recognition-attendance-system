@@ -1,5 +1,4 @@
 export 'screens/bottom_nav_screen.dart';
-export 'screens/demohome.dart';
 export 'screens/home_screen.dart';
 export 'screens/signin.dart';
 export 'screens/signup.dart';
@@ -13,3 +12,4 @@ export 'package:attendanceapp/constants/platette.dart';
 export 'package:attendanceapp/constants/styles.dart';
 export 'models/user_model.dart';
 export 'screens/forgetpassword.dart';
+export 'screens/democamerahomepage.dart';

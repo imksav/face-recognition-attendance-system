@@ -1,9 +1,16 @@
 // ignore_for_file: deprecated_member_use
 
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
+// ignore: depend_on_referenced_packages
+import 'package:path/path.dart';
 
 import '../libraries.dart';
 
@@ -18,6 +25,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   User? user = FirebaseAuth.instance.currentUser;
   UserModel loggedInUser = UserModel();
+  File? image;
 
   @override
   void initState() {
@@ -30,6 +38,27 @@ class _HomeScreenState extends State<HomeScreen> {
       this.loggedInUser = UserModel.fromMap(value.data());
       setState(() {});
     });
+  }
+
+  Future pickImage() async {
+    try {
+      final image = await ImagePicker().pickImage(source: ImageSource.camera);
+      if (image == null) return;
+      // final imageTemp = File(image.path);
+      final imagePermanent = await saveImagePermanently(image.path);
+      setState(() {
+        this.image = imagePermanent;
+      });
+    } on PlatformException catch (e) {
+      print("Failed to capture image : $e");
+    }
+  }
+
+  Future<File> saveImagePermanently(String imagePath) async {
+    final directory = await getApplicationDocumentsDirectory();
+    final name = basename(imagePath);
+    final image = File("${directory.path}/$name");
+    return File(imagePath).copy(image.path);
   }
 
   @override
@@ -45,6 +74,11 @@ class _HomeScreenState extends State<HomeScreen> {
           iconSize: 28.0,
         ),
         actions: <Widget>[
+          IconButton(
+              onPressed: () {
+                pickImage();
+              },
+              icon: const Icon(Icons.photo_camera_outlined)),
           IconButton(
             onPressed: () {
               showDialog(
@@ -112,8 +146,8 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           Expanded(
             child: SizedBox(
-              width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height,
+              // width: MediaQuery.of(context).size.width,
+              // height: MediaQuery.of(context).size.height,
               child: GridView.builder(
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 2),
@@ -153,10 +187,21 @@ class _HomeScreenState extends State<HomeScreen> {
                     textStyle: Styles.titleTextStyle,
                   ),
                 ),
-                const CircleAvatar(
-                    radius: 40.0,
-                    backgroundImage:
-                        AssetImage("assets/images/profile_img.jpg"))
+                Container(
+                    child: image != null
+                        ? Container(
+                            height: 80.0,
+                            width: 80.0,
+                            decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                image:
+                                    DecorationImage(image: FileImage(image!))),
+                          )
+                        : Image.asset(
+                            "assets/images/defaultimage.png",
+                            height: 80.0,
+                            width: 80.0,
+                          ))
               ],
             ),
             SizedBox(height: screenHeight * 0.03),
