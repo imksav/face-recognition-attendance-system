@@ -13,3 +13,4 @@ export 'package:attendanceapp/constants/styles.dart';
 export 'models/user_model.dart';
 export 'screens/forgetpassword.dart';
 export 'screens/democamerahomepage.dart';
+export 'screens/image_upload.dart';

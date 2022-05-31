@@ -76,7 +76,11 @@ class _HomeScreenState extends State<HomeScreen> {
         actions: <Widget>[
           IconButton(
               onPressed: () {
-                pickImage();
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => ImageUpload(
+                          userId: loggedInUser.uid,
+                        )));
+                // pickImage();
               },
               icon: const Icon(Icons.photo_camera_outlined)),
           IconButton(
@@ -96,7 +100,10 @@ class _HomeScreenState extends State<HomeScreen> {
                             child: const Text("Yes")),
                         FlatButton(
                             onPressed: () {
-                              Navigator.of(context).pop();
+                              Navigator.of(context).pushReplacement(
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          const SigninScreen()));
                             },
                             child: const Text("No")),
                       ],
@@ -188,20 +195,20 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ),
                 Container(
-                    child: image != null
-                        ? Container(
-                            height: 80.0,
-                            width: 80.0,
-                            decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                image:
-                                    DecorationImage(image: FileImage(image!))),
-                          )
-                        : Image.asset(
-                            "assets/images/defaultimage.png",
-                            height: 80.0,
-                            width: 80.0,
-                          ))
+                  child: image != null
+                      ? Container(
+                          height: 80.0,
+                          width: 80.0,
+                          decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              image: DecorationImage(image: FileImage(image!))),
+                        )
+                      : Image.asset(
+                          "assets/images/defaultimage.png",
+                          height: 80.0,
+                          width: 80.0,
+                        ),
+                ),
               ],
             ),
             SizedBox(height: screenHeight * 0.03),
@@ -218,26 +225,30 @@ class _HomeScreenState extends State<HomeScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    MyFlatButton(
-                        text: Text(
-                          "Take Attendance",
-                          style: GoogleFonts.aBeeZee(
-                            textStyle: Styles.buttonTextStyle,
+                    Expanded(
+                      child: MyFlatButton(
+                          text: Text(
+                            "Take Attendance",
+                            style: GoogleFonts.aBeeZee(
+                              textStyle: Styles.buttonTextStyle,
+                            ),
                           ),
-                        ),
-                        btnColor: Colors.red,
-                        icon: const Icon(Icons.add_task),
-                        onPressed: const TakeAttendance()),
-                    MyFlatButton(
-                        text: Text(
-                          "View Attendance",
-                          style: GoogleFonts.aBeeZee(
-                            textStyle: Styles.buttonTextStyle,
+                          btnColor: Colors.red,
+                          icon: const Icon(Icons.add_task),
+                          onPressed: const TakeAttendance()),
+                    ),
+                    Expanded(
+                      child: MyFlatButton(
+                          text: Text(
+                            "View Attendance",
+                            style: GoogleFonts.aBeeZee(
+                              textStyle: Styles.buttonTextStyle,
+                            ),
                           ),
-                        ),
-                        btnColor: Colors.green,
-                        icon: const Icon(Icons.add_task),
-                        onPressed: const TakeAttendance()),
+                          btnColor: Colors.green,
+                          icon: const Icon(Icons.add_task),
+                          onPressed: const TakeAttendance()),
+                    ),
                   ],
                 ),
               ],

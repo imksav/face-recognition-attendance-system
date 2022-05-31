@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 import '../libraries.dart';
 
@@ -11,6 +12,15 @@ class SigninScreen extends StatefulWidget {
 }
 
 class _SigninScreenState extends State<SigninScreen> {
+// showing snack bar for errors
+  showSnackBar(String snackText, Duration d) {
+    final snackBar = SnackBar(
+      content: Text(snackText),
+      duration: d,
+    );
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  }
+
   // form key
   final _formKey = GlobalKey<FormState>();
 
@@ -182,35 +192,17 @@ class _SigninScreenState extends State<SigninScreen> {
       await _auth
           .signInWithEmailAndPassword(email: email, password: password)
           .then((uid) => {
-                showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return AlertDialog(
-                        title: const Text("Success Message"),
-                        content: const Text("Login Successful"),
-                        backgroundColor: Colors.green,
-                        actions: [
-                          IconButton(
-                              onPressed: () {
-                                Navigator.pushReplacement(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            const BottomNavScreen()));
-                              },
-                              icon: const Icon(
-                                Icons.close,
-                                size: 40.0,
-                              ))
-                        ],
-                      );
-                    }),
-
-                // ScaffoldMessenger.of(context).showSnackBar(
-                //     const SnackBar(content: Text("Login Successfull"))),
-                // Fluttertoast.showToast(msg: "Login Successful"),
+                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                  content: Text("Login Successfull"),
+                  duration: Duration(seconds: 5),
+                )),
+                Navigator.of(context).push(
+                    MaterialPageRoute(builder: (context) => const HomeScreen()))
               })
           .catchError((e) {
+        // Fluttertoast.showToast(msg: e!);
+        // Navigator.of(context)
+        // .push(MaterialPageRoute(builder: (context) => const HomeScreen()));
         showDialog(
             context: context,
             builder: (BuildContext context) {
@@ -227,7 +219,6 @@ class _SigninScreenState extends State<SigninScreen> {
                 ],
               );
             });
-        // Fluttertoast.showToast(msg: e!.message);
       });
     }
   }

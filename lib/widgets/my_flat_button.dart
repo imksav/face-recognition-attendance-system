@@ -5,7 +5,9 @@ class MyFlatButton extends StatelessWidget {
   final Text text;
   Color btnColor;
   Icon icon;
+  // ignore: prefer_typing_uninitialized_variables
   final onPressed;
+  // ignore: use_key_in_widget_constructors
   MyFlatButton({
     required this.text,
     required this.btnColor,
@@ -28,10 +30,11 @@ class MyFlatButton extends StatelessWidget {
       },
       color: btnColor,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
+      // ignore: sort_child_properties_last
       child: Row(
         children: [
           icon,
-          SizedBox(width: 5.0),
+          const SizedBox(width: 5.0),
           text,
         ],
       ),
