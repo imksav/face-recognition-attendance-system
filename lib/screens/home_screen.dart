@@ -1,21 +1,21 @@
 // ignore_for_file: deprecated_member_use
 
 import 'dart:io';
+import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:path_provider/path_provider.dart';
-// ignore: depend_on_referenced_packages
-import 'package:path/path.dart';
 
 import '../libraries.dart';
 
+// ignore: must_be_immutable
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+  // getting the user id
+  String? userId;
+
+  HomeScreen({Key? key, this.userId}) : super(key: key);
 
   @override
   // ignore: library_private_types_in_public_api
@@ -26,6 +26,7 @@ class _HomeScreenState extends State<HomeScreen> {
   User? user = FirebaseAuth.instance.currentUser;
   UserModel loggedInUser = UserModel();
   File? image;
+  final randomNumber = Random();
 
   @override
   void initState() {
@@ -38,27 +39,6 @@ class _HomeScreenState extends State<HomeScreen> {
       this.loggedInUser = UserModel.fromMap(value.data());
       setState(() {});
     });
-  }
-
-  Future pickImage() async {
-    try {
-      final image = await ImagePicker().pickImage(source: ImageSource.camera);
-      if (image == null) return;
-      // final imageTemp = File(image.path);
-      final imagePermanent = await saveImagePermanently(image.path);
-      setState(() {
-        this.image = imagePermanent;
-      });
-    } on PlatformException catch (e) {
-      print("Failed to capture image : $e");
-    }
-  }
-
-  Future<File> saveImagePermanently(String imagePath) async {
-    final directory = await getApplicationDocumentsDirectory();
-    final name = basename(imagePath);
-    final image = File("${directory.path}/$name");
-    return File(imagePath).copy(image.path);
   }
 
   @override
@@ -75,14 +55,15 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         actions: <Widget>[
           IconButton(
-              onPressed: () {
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => ImageUpload(
-                          userId: loggedInUser.uid,
-                        )));
-                // pickImage();
-              },
-              icon: const Icon(Icons.photo_camera_outlined)),
+              onPressed: () {}, icon: const Icon(Icons.notifications_active)),
+          // IconButton(
+          //     onPressed: () {
+          //       Navigator.of(context).push(MaterialPageRoute(
+          //           builder: (context) => ImageUpload(
+          //                 userId: loggedInUser.uid,
+          //               )));
+          //     },
+          //     icon: const Icon(Icons.photo_camera_outlined)),
           IconButton(
             onPressed: () {
               showDialog(
@@ -96,14 +77,15 @@ class _HomeScreenState extends State<HomeScreen> {
                         FlatButton(
                             onPressed: () {
                               logout(context);
-                            },
-                            child: const Text("Yes")),
-                        FlatButton(
-                            onPressed: () {
                               Navigator.of(context).pushReplacement(
                                   MaterialPageRoute(
                                       builder: (context) =>
                                           const SigninScreen()));
+                            },
+                            child: const Text("Yes")),
+                        FlatButton(
+                            onPressed: () {
+                              Navigator.pop(context);
                             },
                             child: const Text("No")),
                       ],
@@ -174,89 +156,98 @@ class _HomeScreenState extends State<HomeScreen> {
 
   SingleChildScrollView _buildHeader(double screenHeight) {
     return SingleChildScrollView(
-      child: Container(
-        padding: const EdgeInsets.all(20.0),
-        decoration: const BoxDecoration(
-            color: Colors.blue,
-            borderRadius: BorderRadius.only(
-              bottomLeft: Radius.circular(40.0),
-              bottomRight: Radius.circular(40.0),
-            )),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
+        child: Container(
+            padding: const EdgeInsets.all(20.0),
+            decoration: const BoxDecoration(
+                color: Colors.blue,
+                borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(40.0),
+                  bottomRight: Radius.circular(40.0),
+                )),
+            child:
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
                 Text(
-                  "Hi, ${loggedInUser.firstName} ${loggedInUser.secondName}",
+                  "Hi, ${loggedInUser.firstName}",
                   style: GoogleFonts.aBeeZee(
                     textStyle: Styles.titleTextStyle,
                   ),
                 ),
-                Container(
-                  child: image != null
-                      ? Container(
-                          height: 80.0,
-                          width: 80.0,
-                          decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              image: DecorationImage(image: FileImage(image!))),
-                        )
-                      : Image.asset(
+                StreamBuilder(
+                    stream: FirebaseFirestore.instance
+                        .collection("users")
+                        .doc(loggedInUser.uid)
+                        .collection("images")
+                        .snapshots(),
+                    builder: (BuildContext context,
+                        AsyncSnapshot<QuerySnapshot> snapshot) {
+                      if (!snapshot.hasData) {
+                        return Center(
+                            child: Image.asset(
                           "assets/images/defaultimage.png",
-                          height: 80.0,
-                          width: 80.0,
-                        ),
-                ),
-              ],
-            ),
-            SizedBox(height: screenHeight * 0.03),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "Did you take today's attendance?",
-                  style: GoogleFonts.aBeeZee(
-                    textStyle: Styles.subTitleTextStyle,
+                          height: 100.0,
+                          width: 100.0,
+                        ));
+                      } else {
+                        var len = snapshot.data!.size;
+                        String url = snapshot.data!.docs[0]['downloadUrl'];
+                        return Container(
+                          height: MediaQuery.of(context).size.height * 0.1,
+                          width: MediaQuery.of(context).size.width * 0.17,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(19.0),
+                          ),
+                          child: Image.network(
+                            url,
+                            fit: BoxFit.fill,
+                          ),
+                        );
+                      }
+                    })
+              ]),
+              SizedBox(height: screenHeight * 0.03),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Did you take today's attendance?",
+                    style: GoogleFonts.aBeeZee(
+                      textStyle: Styles.subTitleTextStyle,
+                    ),
                   ),
-                ),
-                SizedBox(height: screenHeight * 0.01),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    Expanded(
-                      child: MyFlatButton(
-                          text: Text(
-                            "Take Attendance",
-                            style: GoogleFonts.aBeeZee(
-                              textStyle: Styles.buttonTextStyle,
+                  SizedBox(height: screenHeight * 0.01),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      Expanded(
+                        child: MyFlatButton(
+                            text: Text(
+                              "Take Attendance",
+                              style: GoogleFonts.aBeeZee(
+                                textStyle: Styles.buttonTextStyle,
+                              ),
                             ),
-                          ),
-                          btnColor: Colors.red,
-                          icon: const Icon(Icons.add_task),
-                          onPressed: const TakeAttendance()),
-                    ),
-                    Expanded(
-                      child: MyFlatButton(
-                          text: Text(
-                            "View Attendance",
-                            style: GoogleFonts.aBeeZee(
-                              textStyle: Styles.buttonTextStyle,
+                            btnColor: Colors.red,
+                            icon: const Icon(Icons.add_task),
+                            onPressed: const TakeAttendance()),
+                      ),
+                      Expanded(
+                        child: MyFlatButton(
+                            text: Text(
+                              "View Attendance",
+                              style: GoogleFonts.aBeeZee(
+                                textStyle: Styles.buttonTextStyle,
+                              ),
                             ),
-                          ),
-                          btnColor: Colors.green,
-                          icon: const Icon(Icons.add_task),
-                          onPressed: const TakeAttendance()),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
+                            btnColor: Colors.green,
+                            icon: const Icon(Icons.add_task),
+                            onPressed: const TakeAttendance()),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ])));
   }
 
   Future<void> logout(BuildContext context) async {

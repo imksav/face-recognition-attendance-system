@@ -196,8 +196,8 @@ class _SigninScreenState extends State<SigninScreen> {
                   content: Text("Login Successfull"),
                   duration: Duration(seconds: 5),
                 )),
-                Navigator.of(context).push(
-                    MaterialPageRoute(builder: (context) => const HomeScreen()))
+                Navigator.of(context)
+                    .push(MaterialPageRoute(builder: (context) => HomeScreen()))
               })
           .catchError((e) {
         // Fluttertoast.showToast(msg: e!);

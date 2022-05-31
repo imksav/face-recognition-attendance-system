@@ -310,7 +310,9 @@ class _SignupScreenState extends State<SignupScreen> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const SignupScreen()));
+                            builder: (context) => ImageUpload(
+                                  userId: userModel.uid,
+                                )));
                   },
                   icon: const Icon(Icons.exit_to_app))
             ],
