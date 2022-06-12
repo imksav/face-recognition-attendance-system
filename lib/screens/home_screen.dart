@@ -37,6 +37,7 @@ class _HomeScreenState extends State<HomeScreen> {
         .get()
         .then((value) {
       this.loggedInUser = UserModel.fromMap(value.data());
+      print(loggedInUser);
       setState(() {});
     });
   }
@@ -110,14 +111,14 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildRecentClasses(double screenHeight) {
-    List<String> subjects = [
-      "INNOVATION MANAGEMENT",
-      "BASIC ENTREPRENEURSHIP",
-      "ISYS3100 ENTERPRISE SYSTEM",
-      "CSC 3810 IT PROJECT I",
-      "CSC3639 BIG DATA ANALYSIS",
-      "CSC3532 APPLIED PROGRAMMING",
-    ];
+    // List<String> subjects = [
+    //   "INNOVATION MANAGEMENT",
+    //   "BASIC ENTREPRENEURSHIP",
+    //   "ISYS3100 ENTERPRISE SYSTEM",
+    //   "CSC 3810 IT PROJECT I",
+    //   "CSC3639 BIG DATA ANALYSIS",
+    //   "CSC3532 APPLIED PROGRAMMING",
+    // ];
 
     return Expanded(
       child: Column(
@@ -134,21 +135,49 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
           Expanded(
-            child: SizedBox(
-              // width: MediaQuery.of(context).size.width,
-              // height: MediaQuery.of(context).size.height,
-              child: GridView.builder(
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2),
-                  itemCount: subjects.length,
-                  itemBuilder: (BuildContext context, index) {
-                    return MyCourses(
-                      subject: subjects[index],
-                      index: index,
-                    );
-                  }),
-            ),
-          ),
+              child: StreamBuilder(
+                  stream: FirebaseFirestore.instance
+                      .collection("users")
+                      .doc(loggedInUser.uid)
+                      .collection("images")
+                      .snapshots(),
+                  builder: (BuildContext context,
+                      AsyncSnapshot<QuerySnapshot> snapshot) {
+                    if (!snapshot.hasData) {
+                      return const Center(
+                        child: Text("Not enrolled in any subjects"),
+                      );
+                    } else {
+                      var len = snapshot.data!.size;
+                      List url = snapshot.data!.docs[0]['subjects'];
+
+                      return GridView.builder(
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 2),
+                        itemBuilder: (BuildContext context, index) {
+                          return MyCourses(subject: url[index], index: index);
+                        },
+                        itemCount: url.length,
+                      );
+                    }
+                  })),
+          // Expanded(
+          //   child: SizedBox(
+          //     // width: MediaQuery.of(context).size.width,
+          //     // height: MediaQuery.of(context).size.height,
+          //     child: GridView.builder(
+          //         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          //             crossAxisCount: 2),
+          //         itemCount: subjects.length,
+          //         itemBuilder: (BuildContext context, index) {
+          //           return MyCourses(
+          //             subject: subjects[index],
+          //             index: index,
+          //           );
+          //         }),
+          //   ),
+          // ),
         ],
       ),
     );

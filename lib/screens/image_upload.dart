@@ -1,3 +1,4 @@
+import 'dart:ffi';
 import 'dart:ui';
 
 import 'package:attendanceapp/libraries.dart';
@@ -22,6 +23,7 @@ class _ImageUploadState extends State<ImageUpload> {
   File? _image;
   final imagePicker = ImagePicker();
   String? downloadUrl;
+  Array? subjects;
 
   // image picker
   Future imagePickerMethod() async {
@@ -59,6 +61,7 @@ class _ImageUploadState extends State<ImageUpload> {
         .child("post_$postId");
     await ref.putFile(_image!);
     downloadUrl = await ref.getDownloadURL();
+    // subjects = await ref.child(path)
     // uploading to cloud firestore
 
     await firebaseFirestore
@@ -67,6 +70,7 @@ class _ImageUploadState extends State<ImageUpload> {
         .collection("images")
         .add({"downloadUrl": downloadUrl}).whenComplete(() => showSnackBar(
             "Image Uploaded Successfully", const Duration(seconds: 2)));
+
     // ignore: use_build_context_synchronously
     Navigator.of(context)
         .push(MaterialPageRoute(builder: (context) => const BottomNavScreen()));

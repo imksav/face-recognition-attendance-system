@@ -24,17 +24,28 @@ class MyCourses extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Icon(
-              Icons.menu_book_rounded,
-              color: Colors.white,
-              size: 35.0,
-            ),
-            Text(
-              subject,
-              style: GoogleFonts.aBeeZee(
-                textStyle: TextStyle(
-                  color: Colors.white,
-                  fontSize: 18.0,
+            GestureDetector(
+              onTap: () {
+                print(subject);
+              },
+              child: Container(
+                child: Column(
+                  children: [
+                    Icon(
+                      Icons.menu_book_rounded,
+                      color: Colors.white,
+                      size: 35.0,
+                    ),
+                    Text(
+                      subject,
+                      style: GoogleFonts.aBeeZee(
+                        textStyle: TextStyle(
+                          color: Colors.white,
+                          fontSize: 18.0,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
