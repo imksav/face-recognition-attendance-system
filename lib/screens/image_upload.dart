@@ -1,6 +1,3 @@
-import 'dart:ffi';
-import 'dart:ui';
-
 import 'package:attendanceapp/libraries.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -23,12 +20,12 @@ class _ImageUploadState extends State<ImageUpload> {
   File? _image;
   final imagePicker = ImagePicker();
   String? downloadUrl;
-  Array? subjects;
+  // Array? subjects;
 
   // image picker
   Future imagePickerMethod() async {
 // picking the image from gallery
-    final pick = await imagePicker.pickImage(source: ImageSource.gallery);
+    final pick = await imagePicker.pickImage(source: ImageSource.camera);
 
     setState(() {
       if (pick != null) {

@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../libraries.dart';
 
@@ -27,6 +28,10 @@ class _SignupScreenState extends State<SignupScreen> {
   Widget build(BuildContext context) {
     // first name field
     final firstNameField = TextFormField(
+      inputFormatters: [
+        FilteringTextInputFormatter.allow(RegExp(r"[a-zA-Z0-9]*")),
+        FilteringTextInputFormatter.deny(RegExp(r"^[0-9]"))
+      ],
       decoration: InputDecoration(
           prefixIcon: const Icon(Icons.person_rounded),
           prefixIconColor: Colors.red,
@@ -53,6 +58,10 @@ class _SignupScreenState extends State<SignupScreen> {
 
 // second name field
     final secondNameField = TextFormField(
+      inputFormatters: [
+        FilteringTextInputFormatter.allow(RegExp(r"[a-zA-Z0-9]*")),
+        FilteringTextInputFormatter.deny(RegExp(r"^[0-9]"))
+      ],
       decoration: InputDecoration(
           prefixIcon: const Icon(Icons.person_rounded),
           prefixIconColor: Colors.red,

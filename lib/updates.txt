@@ -1,0 +1,5 @@
+while assigning the subjects, you have to follow following steps:
+1. Create Collection of "subjects"
+2. Assign "Auto ID"
+3. create an array of "enrolledSubjects"
+4. DONE

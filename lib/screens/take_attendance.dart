@@ -1,85 +1,182 @@
-import 'package:google_fonts/google_fonts.dart';
-
+import 'package:attendanceapp/libraries.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'dart:io';
 
-import '../libraries.dart';
-
+// ignore: must_be_immutable
 class TakeAttendance extends StatefulWidget {
-  const TakeAttendance({Key? key}) : super(key: key);
+// we need user id to create an image folder for a particular user
+  String? userId;
+  String subject;
+
+  TakeAttendance({Key? key, this.userId, required this.subject})
+      : super(key: key);
 
   @override
-  // ignore: library_private_types_in_public_api
-  _TakeAttendanceState createState() => _TakeAttendanceState();
+  State<TakeAttendance> createState() => _TakeAttendanceState();
 }
 
 class _TakeAttendanceState extends State<TakeAttendance> {
-  List<String> subjects = [
-    "INNOVATION MANAGEMENT",
-    "BASIC ENTREPRENEURSHIP",
-    "ISYS3100 ENTERPRISE SYSTEM",
-    "CSC 3810 IT PROJECT I",
-    "CSC3639 BIG DATA ANALYSIS",
-    "CSC3532 APPLIED PROGRAMMING",
-  ];
+  //  some initalization code
+  File? _image;
+  final imagePicker = ImagePicker();
+  String? downloadUrl;
+  // Array? subjects;
+  // String? subject;
+
+  // image picker
+  Future imagePickerMethod() async {
+// picking the image from gallery
+    final pick = await imagePicker.pickImage(source: ImageSource.camera);
+
+    setState(() {
+      if (pick != null) {
+        _image = File(pick.path);
+      } else {
+        // showing snackbar with error
+        showSnackBar("No File Selected", const Duration(milliseconds: 1000));
+      }
+    });
+  }
+
+// showing snackbar for errors
+  showSnackBar(String snackText, Duration d) {
+    final snackBar = SnackBar(
+      content: Text(snackText),
+      duration: d,
+    );
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  }
+
+// uploading the image, then getting the downloading url and then
+// adding that download url to our cloudfirestore
+
+  Future uploadImage() async {
+    final FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
+    final postId = DateTime.now().millisecondsSinceEpoch.toString();
+    Reference ref = FirebaseStorage.instance
+        .ref()
+        .child("${widget.userId}/${widget.subject}")
+        .child("post_$postId");
+    await ref.putFile(_image!);
+    downloadUrl = await ref.getDownloadURL();
+    // subjects = await ref.child(path)
+    // uploading to cloud firestore
+
+    await firebaseFirestore
+        .collection("users")
+        .doc(widget.userId)
+        .collection("images")
+        .add({"downloadUrl": downloadUrl}).whenComplete(() => showSnackBar(
+            "Image Uploaded Successfully", const Duration(seconds: 2)));
+
+    // ignore: use_build_context_synchronously
+    Navigator.of(context)
+        .push(MaterialPageRoute(builder: (context) => const BottomNavScreen()));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.indigo,
       appBar: AppBar(
+        title: const Text("Take Attendance"),
         backgroundColor: Colors.indigo,
-        elevation: 0.0,
-        title: Text(
-          "Take Attendance",
-          style: GoogleFonts.aBeeZee(
-            textStyle: Styles.subTitleTextStyle,
+      ),
+      body: SizedBox(
+        width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).size.height,
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(30.0),
+              child: SizedBox(
+                height: 700.0,
+                width: double.infinity,
+                child: Column(
+                  // ignore: prefer_const_literals_to_create_immutables
+                  children: [
+                    Container(
+                        padding: const EdgeInsets.all(20.0),
+                        decoration: BoxDecoration(
+                            color: Colors.purple[600],
+                            borderRadius: BorderRadius.circular(30.0)),
+                        child: Text(
+                          widget.subject,
+                          style: const TextStyle(
+                              color: Colors.white, fontSize: 20.0),
+                        )),
+                    const SizedBox(
+                      height: 10.0,
+                    ),
+                    Expanded(
+                      flex: 4,
+                      child: Container(
+                        width: 350.0,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20.0),
+                          border: Border.all(color: Colors.red),
+                        ),
+                        child: Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              const SizedBox(height: 10.0),
+                              Expanded(
+                                child: _image == null
+                                    ? const Center(
+                                        child: Text("No Image Selected!!!"),
+                                      )
+                                    : Image.file(_image!),
+                              ),
+                              const SizedBox(height: 10.0),
+                              GestureDetector(
+                                onTap: () => imagePickerMethod(),
+                                child: Container(
+                                  padding: const EdgeInsets.all(10.0),
+                                  decoration: BoxDecoration(
+                                    color: Colors.amber[900],
+                                    borderRadius: BorderRadius.circular(10.0),
+                                  ),
+                                  child: const Text(
+                                    "Select Image",
+                                    style: TextStyle(
+                                        color: Colors.white, fontSize: 20.0),
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 10.0),
+                              GestureDetector(
+                                onTap: () => uploadImage(),
+                                child: Container(
+                                  padding: const EdgeInsets.all(10.0),
+                                  decoration: BoxDecoration(
+                                    color: Colors.blue[900],
+                                    borderRadius: BorderRadius.circular(10.0),
+                                  ),
+                                  child: const Text(
+                                    "Upload Image",
+                                    style: TextStyle(
+                                        color: Colors.white, fontSize: 20.0),
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 10.0),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
           ),
         ),
       ),
-      body: SafeArea(
-          child: SingleChildScrollView(
-        child: Container(
-          margin: const EdgeInsets.all(5.0),
-          decoration: const BoxDecoration(
-            borderRadius: BorderRadius.only(),
-            // color: Colors.green,
-          ),
-          width: MediaQuery.of(context).size.width,
-          height: MediaQuery.of(context).size.height,
-          child: ListView.separated(
-              scrollDirection: Axis.vertical,
-              reverse: false,
-              itemCount: subjects.length,
-              // ignore: non_constant_identifier_names, avoid_types_as_parameter_names
-              separatorBuilder: (BuildContext, index) =>
-                  const Divider(color: Colors.grey),
-              // ignore: non_constant_identifier_names, avoid_types_as_parameter_names
-              itemBuilder: (BuildContext, index) {
-                return Card(
-                  color: Colors.indigo,
-                  shadowColor: Colors.purple,
-                  elevation: 0.0,
-                  // color: Colors.indigo[200],
-                  child: ListTile(
-                    leading: const CircleAvatar(
-                      backgroundImage:
-                          AssetImage("assets/images/profile_img.jpg"),
-                    ),
-                    title: Text(
-                      subjects[index],
-                      style: Styles.titleTextStyle,
-                    ),
-                    subtitle: const Text(
-                      "Total Classes: 125, Present: 97, Absent: 28",
-                      style: Styles.chartLabelsTextStyle,
-                    ),
-                    isThreeLine: false,
-                    trailing: const Icon(Icons.photo_camera,
-                        color: Colors.white, size: 30.0),
-                  ),
-                );
-              }),
-        ),
-      )),
     );
   }
 }

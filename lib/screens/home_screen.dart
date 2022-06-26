@@ -134,50 +134,51 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
           ),
+          // this is the testing one
           Expanded(
-              child: StreamBuilder(
-                  stream: FirebaseFirestore.instance
-                      .collection("users")
-                      .doc(loggedInUser.uid)
-                      .collection("images")
-                      .snapshots(),
-                  builder: (BuildContext context,
-                      AsyncSnapshot<QuerySnapshot> snapshot) {
-                    if (!snapshot.hasData) {
-                      return const Center(
-                        child: Text("Not enrolled in any subjects"),
-                      );
-                    } else {
-                      var len = snapshot.data!.size;
-                      List url = snapshot.data!.docs[0]['subjects'];
+            child: StreamBuilder(
+                stream: FirebaseFirestore.instance
+                    .collection("users")
+                    .doc(loggedInUser.uid)
+                    .collection("subjects")
+                    .snapshots(),
+                builder: (BuildContext context,
+                    AsyncSnapshot<QuerySnapshot> snapshot) {
+                  if (!snapshot.hasData) {
+                    return const Center(
+                      child: Text("Not enrolled yet."),
+                    );
+                  } else {
+                    List size = snapshot.data!.docs[0]['enrolledSubjects'];
+                    // print(size.length);
+                    return GridView.builder(
+                      gridDelegate:
+                          const SliverGridDelegateWithMaxCrossAxisExtent(
+                              maxCrossAxisExtent: 250),
+                      itemBuilder: (BuildContext context, index) {
+                        return MyCourses(
+                          subject: size[index],
+                          index: index,
+                          userId: loggedInUser.uid,
+                        );
+                      },
+                      itemCount: size.length,
+                    );
+                  }
 
-                      return GridView.builder(
-                        gridDelegate:
-                            const SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 2),
-                        itemBuilder: (BuildContext context, index) {
-                          return MyCourses(subject: url[index], index: index);
-                        },
-                        itemCount: url.length,
-                      );
-                    }
-                  })),
-          // Expanded(
-          //   child: SizedBox(
-          //     // width: MediaQuery.of(context).size.width,
-          //     // height: MediaQuery.of(context).size.height,
-          //     child: GridView.builder(
-          //         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          //             crossAxisCount: 2),
-          //         itemCount: subjects.length,
-          //         itemBuilder: (BuildContext context, index) {
-          //           return MyCourses(
-          //             subject: subjects[index],
-          //             index: index,
-          //           );
-          //         }),
-          //   ),
-          // ),
+                  //             gridDelegate:
+                  //                 const SliverGridDelegateWithFixedCrossAxisCount(
+                  //                     crossAxisCount: 2),
+                  //             itemBuilder: (BuildContext context, index) {
+                  //               return MyCourses(subject: url[index], index: index);
+                  //             },
+                  //             itemCount: url.length,
+                  //           );
+                  //         }
+                  //       }),
+                  // ),
+                }),
+          ),
         ],
       ),
     );
@@ -218,7 +219,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           width: 100.0,
                         ));
                       } else {
-                        var len = snapshot.data!.size;
+                        // var len = snapshot.data!.size;
                         String url = snapshot.data!.docs[0]['downloadUrl'];
                         return Container(
                           height: MediaQuery.of(context).size.height * 0.1,
@@ -258,7 +259,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                             btnColor: Colors.red,
                             icon: const Icon(Icons.add_task),
-                            onPressed: const TakeAttendance()),
+                            onPressed: () {}),
                       ),
                       Expanded(
                         child: MyFlatButton(
@@ -270,7 +271,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                             btnColor: Colors.green,
                             icon: const Icon(Icons.add_task),
-                            onPressed: const TakeAttendance()),
+                            onPressed: () {}),
                       ),
                     ],
                   ),
