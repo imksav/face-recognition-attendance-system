@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-
 class StatsScreen extends StatefulWidget {
   const StatsScreen({Key? key}) : super(key: key);
 
@@ -12,6 +11,10 @@ class StatsScreen extends StatefulWidget {
 class _StatsScreenState extends State<StatsScreen> {
   @override
   Widget build(BuildContext context) {
-    return const Scaffold();
+    return const Scaffold(
+      body: Center(
+        child: Text('Stats Screen'),
+      ),
+    );
   }
 }

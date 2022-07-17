@@ -11,8 +11,10 @@ class ViewAttendance extends StatefulWidget {
 class _ViewAttendanceState extends State<ViewAttendance> {
   @override
   Widget build(BuildContext context) {
-    return const Center(
-      child: Text("This is attendance view page......."),
+    return const Scaffold(
+      body: Center(
+        child: Text('View Attendance'),
+      ),
     );
   }
 }

@@ -22,8 +22,8 @@ class MyFlatButton extends StatelessWidget {
       padding: const EdgeInsets.all(8.0),
       child: FlatButton(
         padding: const EdgeInsets.symmetric(
-          vertical: 10.0,
-          horizontal: 20.0,
+          vertical: 8,
+          horizontal: 7.0,
         ),
         splashColor: Colors.purple,
         onPressed: () {

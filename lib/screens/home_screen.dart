@@ -37,7 +37,6 @@ class _HomeScreenState extends State<HomeScreen> {
         .get()
         .then((value) {
       this.loggedInUser = UserModel.fromMap(value.data());
-      print(loggedInUser);
       setState(() {});
     });
   }
@@ -125,12 +124,19 @@ class _HomeScreenState extends State<HomeScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: const EdgeInsets.only(top: 30.0, left: 20.0, bottom: 20.0),
-            child: Text(
-              "My Courses",
-              style: GoogleFonts.aBeeZee(
-                textStyle: Styles.titleTextStyle,
-                color: Colors.black,
+            padding: const EdgeInsets.only(
+                top: 30.0, left: 30.0, bottom: 20.0, right: 20.0),
+            child: Center(
+              child: Text(
+                "My Recent Courses",
+                style: GoogleFonts.aBeeZee(
+                  textStyle: Styles.titleTextStyle,
+                  fontSize: 30.0,
+                  fontStyle: FontStyle.italic,
+                  fontWeight: FontWeight.w600,
+                  decoration: TextDecoration.underline,
+                  color: Colors.black,
+                ),
               ),
             ),
           ),
@@ -165,18 +171,6 @@ class _HomeScreenState extends State<HomeScreen> {
                       itemCount: size.length,
                     );
                   }
-
-                  //             gridDelegate:
-                  //                 const SliverGridDelegateWithFixedCrossAxisCount(
-                  //                     crossAxisCount: 2),
-                  //             itemBuilder: (BuildContext context, index) {
-                  //               return MyCourses(subject: url[index], index: index);
-                  //             },
-                  //             itemCount: url.length,
-                  //           );
-                  //         }
-                  //       }),
-                  // ),
                 }),
           ),
         ],
@@ -196,13 +190,23 @@ class _HomeScreenState extends State<HomeScreen> {
                 )),
             child:
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+              Row(mainAxisAlignment: MainAxisAlignment.start, children: [
                 Text(
-                  "Hi, ${loggedInUser.firstName}",
+                  "Hi,",
                   style: GoogleFonts.aBeeZee(
                     textStyle: Styles.titleTextStyle,
                   ),
                 ),
+                const SizedBox(width: 10.0),
+                Text(
+                  "${loggedInUser.firstName}",
+                  style: GoogleFonts.aBeeZee(
+                    textStyle: Styles.titleTextStyle,
+                    fontStyle: FontStyle.italic,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                const SizedBox(width: 175.0),
                 StreamBuilder(
                     stream: FirebaseFirestore.instance
                         .collection("users")
@@ -247,7 +251,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   SizedBox(height: screenHeight * 0.01),
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Expanded(
                         child: MyFlatButton(
@@ -259,7 +264,16 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                             btnColor: Colors.red,
                             icon: const Icon(Icons.add_task),
-                            onPressed: () {}),
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => TakeAttendance(
+                                    subject: "Take Attendance",
+                                  ),
+                                ),
+                              );
+                            }),
                       ),
                       Expanded(
                         child: MyFlatButton(
@@ -270,7 +284,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               ),
                             ),
                             btnColor: Colors.green,
-                            icon: const Icon(Icons.add_task),
+                            icon: const Icon(Icons.view_agenda),
                             onPressed: () {}),
                       ),
                     ],
