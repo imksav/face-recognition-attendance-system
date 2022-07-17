@@ -25,7 +25,6 @@ def getUserId(users):
           firstName = person.get('firstName')
           secondName = person.get('secondName')
           fullName = firstName + ' ' + secondName
-          print(fullName)
           if(user.to_dict()['uid']==user.id):
                current_user_id=user.id
                user_found=True
@@ -33,11 +32,8 @@ def getUserId(users):
                datas = coll.get()
                for data in datas:
                     documentId=data.id
-                    # print(documentId)
                     downloadUrl = data.to_dict()['downloadUrl']
                userDict[current_user_id] = createDict(current_user_id, documentId, fullName, downloadUrl)
-               # print(userDict)
-               print("==========================================================================================")
                
           else:
                print('User not found in document ',user.id)
@@ -53,39 +49,9 @@ def createDict(current_user_id, documentId, fullname, downloadUrl):
 
 
 getUserId(users)
-print("-------------------------------------------------------------------------------------------------------")
 userDictJson = json.dumps(userDict)
-with open('userDictJson.json', 'a') as f:
+with open('../attendanceapp/lib/python_code/userDictJson.json', 'w') as f:
      json.dump(userDict, f)
-
-# for user in users:
-#      # print(f"{user.id}: {user.to_dict()}")
-#      person = user.to_dict()
-#      firstName = person.get('firstName')
-#      secondName = person.get('secondName')
-#      # print(firstName+secondName)
-#      print("==========================")
-#      if(user.to_dict()['uid']==user.id):
-#           current_user_id=user.id
-#           user_found=True
-#           print('User found in document ',current_user_id)
-#      doc_ref = db.collection('users').document(current_user_id).collection('images').stream()
-#      print("*********************************")
-#      coll = db.collection("users").document(current_user_id).collection('images')
-#      datas = coll.get()
-#      for data in datas:
-#           url = data.to_dict()['downloadUrl']
-#           print('downloadUrl', url)
-     # document = doc_ref.get()
-     # print(document.to_dict())
-     # d = doc_ref.get().to_dict()['images']
-     # print(d)
-     
-     
-     
-     
-     
-#  stg = firestore.storage(user.id);
 
      
 

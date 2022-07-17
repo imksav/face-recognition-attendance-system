@@ -65,7 +65,10 @@ class _ImageUploadState extends State<ImageUpload> {
         .collection("users")
         .doc(widget.userId)
         .collection("images")
-        .add({"downloadUrl": downloadUrl}).whenComplete(() => showSnackBar(
+        .add({
+      "downloadUrl": downloadUrl,
+      "createdAt": DateTime.now().millisecondsSinceEpoch.toString()
+    }).whenComplete(() => showSnackBar(
             "Image Uploaded Successfully", const Duration(seconds: 2)));
 
     // ignore: use_build_context_synchronously

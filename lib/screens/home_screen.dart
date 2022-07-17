@@ -212,6 +212,8 @@ class _HomeScreenState extends State<HomeScreen> {
                         .collection("users")
                         .doc(loggedInUser.uid)
                         .collection("images")
+                        .orderBy("createdAt", descending: true)
+                        .limit(1)
                         .snapshots(),
                     builder: (BuildContext context,
                         AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -224,8 +226,8 @@ class _HomeScreenState extends State<HomeScreen> {
                         ));
                       } else {
                         var len = snapshot.data!.size;
-                        String url =
-                            snapshot.data!.docs[len - 1]['downloadUrl'];
+                        String url = snapshot.data!.docs[0]['downloadUrl'];
+                        print(url);
                         return Container(
                           height: MediaQuery.of(context).size.height * 0.1,
                           width: MediaQuery.of(context).size.width * 0.17,
@@ -268,7 +270,8 @@ class _HomeScreenState extends State<HomeScreen> {
                               context,
                               MaterialPageRoute(
                                   builder: ((context) => TakeAttendance(
-                                        subject: "subject",
+                                        subject:
+                                            loggedInUser.firstName.toString(),
                                         userId: loggedInUser.uid,
                                       ))));
                         },

@@ -28,7 +28,8 @@ class _TakeAttendanceState extends State<TakeAttendance> {
 
   // image picker
   Future imagePickerMethod() async {
-// picking the image from gallery
+// picking the image from gallery and camera
+    // final pick = await imagePicker.pickImage(source: ImageSource.gallery);
     final pick = await imagePicker.pickImage(source: ImageSource.camera);
 
     setState(() {
@@ -59,7 +60,7 @@ class _TakeAttendanceState extends State<TakeAttendance> {
     Reference ref = FirebaseStorage.instance
         .ref()
         .child("${widget.userId}/${widget.subject}")
-        .child("post_$postId");
+        .child("$postId");
     await ref.putFile(_image!);
     downloadUrl = await ref.getDownloadURL();
     // subjects = await ref.child(path)
@@ -69,7 +70,10 @@ class _TakeAttendanceState extends State<TakeAttendance> {
         .collection("users")
         .doc(widget.userId)
         .collection("images")
-        .add({"downloadUrl": downloadUrl}).whenComplete(() => showSnackBar(
+        .add({
+      "downloadUrl": downloadUrl,
+      "createdAt": DateTime.now().millisecondsSinceEpoch.toString(),
+    }).whenComplete(() => showSnackBar(
             "Image Uploaded Successfully", const Duration(seconds: 2)));
 
     // ignore: use_build_context_synchronously
