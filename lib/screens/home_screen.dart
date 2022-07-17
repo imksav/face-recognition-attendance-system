@@ -223,8 +223,9 @@ class _HomeScreenState extends State<HomeScreen> {
                           width: 100.0,
                         ));
                       } else {
-                        // var len = snapshot.data!.size;
-                        String url = snapshot.data!.docs[0]['downloadUrl'];
+                        var len = snapshot.data!.size;
+                        String url =
+                            snapshot.data!.docs[len - 1]['downloadUrl'];
                         return Container(
                           height: MediaQuery.of(context).size.height * 0.1,
                           width: MediaQuery.of(context).size.width * 0.17,
@@ -254,39 +255,79 @@ class _HomeScreenState extends State<HomeScreen> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Expanded(
-                        child: MyFlatButton(
-                            text: Text(
+                      FlatButton(
+                        padding: const EdgeInsets.symmetric(
+                          vertical: 8,
+                          horizontal: 10.0,
+                        ),
+                        splashColor: Colors.purple,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20.0)),
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: ((context) => TakeAttendance(
+                                        subject: "subject",
+                                        userId: loggedInUser.uid,
+                                      ))));
+                        },
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(Icons.add_task_rounded),
+                            Text(
                               "Take Attendance",
                               style: GoogleFonts.aBeeZee(
-                                textStyle: Styles.buttonTextStyle,
-                              ),
+                                  textStyle: Styles.buttonTextStyle),
                             ),
-                            btnColor: Colors.red,
-                            icon: const Icon(Icons.add_task),
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => TakeAttendance(
-                                    subject: "Take Attendance",
-                                  ),
-                                ),
-                              );
-                            }),
+                          ],
+                        ),
+                        color: Colors.red,
                       ),
-                      Expanded(
-                        child: MyFlatButton(
-                            text: Text(
+                      FlatButton(
+                        padding: const EdgeInsets.symmetric(
+                          vertical: 8,
+                          horizontal: 10.0,
+                        ),
+                        splashColor: Colors.purple,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20.0)),
+                        onPressed: () {},
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(Icons.add_task_rounded),
+                            Text(
                               "View Attendance",
                               style: GoogleFonts.aBeeZee(
-                                textStyle: Styles.buttonTextStyle,
-                              ),
+                                  textStyle: Styles.buttonTextStyle),
                             ),
-                            btnColor: Colors.green,
-                            icon: const Icon(Icons.view_agenda),
-                            onPressed: () {}),
+                          ],
+                        ),
+                        color: Colors.green,
                       ),
+                      //   child: MyFlatButton(
+                      //       text: Text(
+                      //         "Take Attendance",
+                      //         style: GoogleFonts.aBeeZee(
+                      //           textStyle: Styles.buttonTextStyle,
+                      //         ),
+                      //       ),
+                      //       btnColor: Colors.red,
+                      //       icon: const Icon(Icons.add_task),
+                      //       onPressed: () {}),
+
+                      // child: MyFlatButton(
+                      //     text: Text(
+                      //       "View Attendance",
+                      //       style: GoogleFonts.aBeeZee(
+                      //         textStyle: Styles.buttonTextStyle,
+                      //       ),
+                      //     ),
+                      //     btnColor: Colors.green,
+                      //     icon: const Icon(Icons.view_agenda),
+                      //     onPressed: () {}
                     ],
                   ),
                 ],
