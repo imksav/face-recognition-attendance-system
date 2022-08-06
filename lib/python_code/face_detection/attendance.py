@@ -5,7 +5,7 @@ import os
 from datetime import datetime
 
 
-path = '../attendanceapp/lib/python_code/face_detection/images/'
+path = '../attendanceapp/lib/python_code/face_detection/images22'
 images = []
 personNames = []
 myList = os.listdir(path)
