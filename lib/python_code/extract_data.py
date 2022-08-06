@@ -45,13 +45,20 @@ def createDict(current_user_id, documentId, fullname, downloadUrl):
      userID['document_id'] = documentId
      userID['fullname'] = fullname
      userID['download_url'] = downloadUrl
+     # sendDataToFirebase(current_user_id, documentId, fullname, downloadUrl)
      return userID
 
+# def sendDataToFirebase(current_user_id, documentId, fullname, downloadUrl):
+#      db.collection(u'jsonData').add({'userId': current_user_id, 'documentId': documentId, 'fullname': fullname , 'downloadUrl': downloadUrl})
+#      print('Data sent to firebase')
 
 getUserId(users)
 userDictJson = json.dumps(userDict)
 with open('../attendanceapp/lib/python_code/userDictJson.json', 'w') as f:
      json.dump(userDict, f)
+
+
+
 
      
 
