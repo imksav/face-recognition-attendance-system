@@ -23,6 +23,7 @@ class _TakeAttendanceState extends State<TakeAttendance> {
   File? _image;
   final imagePicker = ImagePicker();
   String? downloadUrl;
+  List? presentDate;
   // Array? subjects;
   // String? subject;
 
@@ -64,8 +65,14 @@ class _TakeAttendanceState extends State<TakeAttendance> {
     await ref.putFile(_image!);
     downloadUrl = await ref.getDownloadURL();
     // subjects = await ref.child(path)
+    // await firebaseFirestore
+    //     .collection("users")
+    //     .doc(widget.userId)
+    //     .collection("attendance")
+    //     .add({
+    //   "downloadUrl": downloadUrl,
+    // });
     // uploading to cloud firestore
-
     await firebaseFirestore
         .collection("users")
         .doc(widget.userId)

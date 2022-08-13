@@ -296,7 +296,16 @@ class _HomeScreenState extends State<HomeScreen> {
                         splashColor: Colors.purple,
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(20.0)),
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: ((context) => ViewAttendance(
+                                        // subject:
+                                        //     loggedInUser.firstName.toString(),
+                                        userId: loggedInUser.uid,
+                                      ))));
+                        },
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
