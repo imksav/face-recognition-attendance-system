@@ -197,7 +197,9 @@ class _SigninScreenState extends State<SigninScreen> {
                   duration: Duration(seconds: 5),
                 )),
                 Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => const BottomNavScreen()))
+                    builder: (context) => BottomNavScreen(
+                          userId: uid.toString(),
+                        )))
               })
           .catchError((e) {
         // Fluttertoast.showToast(msg: e!);

@@ -1,9 +1,14 @@
+import 'dart:math';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import '../libraries.dart';
 
 class BottomNavScreen extends StatefulWidget {
-  const BottomNavScreen({Key? key}) : super(key: key);
+  String? userId;
+  BottomNavScreen({Key? key, required this.userId}) : super(key: key);
 
   @override
   // ignore: library_private_types_in_public_api
@@ -13,7 +18,9 @@ class BottomNavScreen extends StatefulWidget {
 class _BottomNavScreenState extends State<BottomNavScreen> {
   final List _screens = [
     HomeScreen(),
-    ViewAttendance(),
+    // ViewAttendance(userId: userId,),
+    // StatsScreen(userId: widget.userId),
+    const Scaffold(),
     const Scaffold(),
     const Scaffold(),
   ];

@@ -1,4 +1,5 @@
 import 'package:attendanceapp/libraries.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -84,8 +85,10 @@ class _TakeAttendanceState extends State<TakeAttendance> {
             "Image Uploaded Successfully", const Duration(seconds: 2)));
 
     // ignore: use_build_context_synchronously
-    Navigator.of(context)
-        .push(MaterialPageRoute(builder: (context) => const BottomNavScreen()));
+    Navigator.of(context).push(MaterialPageRoute(
+        builder: (context) => BottomNavScreen(
+              userId: widget.userId,
+            )));
   }
 
   @override
