@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'libraries.dart';
@@ -25,7 +26,18 @@ class _MyAppState extends State<MyApp> {
           scaffoldBackgroundColor: Colors.white,
           visualDensity: VisualDensity.adaptivePlatformDensity),
       debugShowCheckedModeBanner: false,
-      home: const SigninScreen(),
+      home: Scaffold(
+        body: StreamBuilder<User?>(
+          stream: FirebaseAuth.instance.authStateChanges(),
+          builder: (context, snapshot) {
+            if (snapshot.hasData)
+              return BottomNavScreen();
+            else {
+              return SigninScreen();
+            }
+          },
+        ),
+      ),
     );
   }
 }

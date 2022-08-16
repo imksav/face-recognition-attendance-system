@@ -184,19 +184,19 @@ class _SignupScreenState extends State<SignupScreen> {
 
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
-        elevation: 0,
-        backgroundColor: Colors.transparent,
-        leading: IconButton(
-          icon: const Icon(
-            Icons.arrow_back,
-            color: Colors.blue,
-          ),
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-        ),
-      ),
+      // appBar: AppBar(
+      //   elevation: 0,
+      //   backgroundColor: Colors.transparent,
+      //   leading: IconButton(
+      //     icon: const Icon(
+      //       Icons.arrow_back,
+      //       color: Colors.blue,
+      //     ),
+      //     onPressed: () {
+      //       Navigator.of(context).pop();
+      //     },
+      //   ),
+      // ),
       body: Center(
         child: SingleChildScrollView(
           child: Container(
@@ -245,11 +245,17 @@ class _SignupScreenState extends State<SignupScreen> {
                                   color: Colors.blue),
                             ),
                             onTap: () {
-                              Navigator.push(
+                              Navigator.pushAndRemoveUntil(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) =>
-                                          const SigninScreen()));
+                                      builder: (BuildContext context) =>
+                                          SigninScreen()),
+                                  (route) => false);
+                              // Navigator.push(
+                              //     context,
+                              //     MaterialPageRoute(
+                              //         builder: (context) =>
+                              //             const SigninScreen()));
                             },
                           )
                         ],

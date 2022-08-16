@@ -167,11 +167,12 @@ class _SigninScreenState extends State<SigninScreen> {
                                   color: Colors.blue),
                             ),
                             onTap: () {
-                              Navigator.push(
+                              Navigator.pushAndRemoveUntil(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) =>
-                                          const SignupScreen()));
+                                      builder: (BuildContext context) =>
+                                          SignupScreen()),
+                                  (route) => false);
                             },
                           )
                         ],
@@ -196,8 +197,13 @@ class _SigninScreenState extends State<SigninScreen> {
                   content: Text("Login Successfull"),
                   duration: Duration(seconds: 5),
                 )),
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => const BottomNavScreen()))
+                Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                        builder: (BuildContext context) => BottomNavScreen()),
+                    (route) => false),
+                // Navigator.of(context).push(MaterialPageRoute(
+                //     builder: (context) => const BottomNavScreen()))
               })
           .catchError((e) {
         // Fluttertoast.showToast(msg: e!);

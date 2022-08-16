@@ -72,8 +72,12 @@ class _ImageUploadState extends State<ImageUpload> {
             "Image Uploaded Successfully", const Duration(seconds: 2)));
 
     // ignore: use_build_context_synchronously
-    Navigator.of(context)
-        .push(MaterialPageRoute(builder: (context) => const BottomNavScreen()));
+    Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (BuildContext context) => BottomNavScreen()),
+        (route) => false);
+    // Navigator.of(context)
+    // .push(MaterialPageRoute(builder: (context) => const BottomNavScreen()));
   }
 
   @override

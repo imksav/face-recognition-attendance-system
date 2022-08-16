@@ -77,10 +77,12 @@ class _HomeScreenState extends State<HomeScreen> {
                         FlatButton(
                             onPressed: () {
                               logout(context);
-                              Navigator.of(context).pushReplacement(
+                              Navigator.pushAndRemoveUntil(
+                                  context,
                                   MaterialPageRoute(
-                                      builder: (context) =>
-                                          const SigninScreen()));
+                                      builder: (BuildContext context) =>
+                                          SigninScreen()),
+                                  (route) => false);
                             },
                             child: const Text("Yes")),
                         FlatButton(
@@ -350,7 +352,11 @@ class _HomeScreenState extends State<HomeScreen> {
   Future<void> logout(BuildContext context) async {
     await FirebaseAuth.instance.signOut();
     // ignore: use_build_context_synchronously
-    Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) => const SigninScreen()));
+    Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (BuildContext context) => SigninScreen()),
+        (route) => false);
+    // Navigator.of(context).pushReplacement(
+    // MaterialPageRoute(builder: (context) => const SigninScreen()));
   }
 }

@@ -18,8 +18,13 @@ class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
       actions: <Widget>[
         IconButton(
           onPressed: () {
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => const SigninScreen()));
+            Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(
+                    builder: (BuildContext context) => SigninScreen()),
+                (route) => false);
+            // Navigator.push(context,
+            //     MaterialPageRoute(builder: (context) => const SigninScreen()));
           },
           icon: const Icon(Icons.logout_rounded),
           iconSize: 28.0,

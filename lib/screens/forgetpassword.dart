@@ -69,8 +69,13 @@ class _ForgetPasswordPageState extends State<ForgetPasswordPage> {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
-            Navigator.of(context).pushReplacement(
-                MaterialPageRoute(builder: (context) => const SigninScreen()));
+            Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(
+                    builder: (BuildContext context) => SigninScreen()),
+                (route) => false);
+            // Navigator.of(context).pushReplacement(
+            //     MaterialPageRoute(builder: (context) => const SigninScreen()));
           },
         ),
         centerTitle: true,
@@ -129,7 +134,13 @@ class _ForgetPasswordPageState extends State<ForgetPasswordPage> {
               actions: [
                 IconButton(
                     onPressed: () {
-                      Navigator.of(context).pop();
+                      Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(
+                              builder: (BuildContext context) =>
+                                  SigninScreen()),
+                          (route) => false);
+                      // Navigator.of(context).pop();
                     },
                     icon: const Icon(
                       Icons.close,
