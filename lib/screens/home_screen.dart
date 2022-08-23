@@ -208,7 +208,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     fontWeight: FontWeight.w600,
                   ),
                 ),
-                const SizedBox(width: 175.0),
+                const SizedBox(width: 135.0),
                 StreamBuilder(
                     stream: FirebaseFirestore.instance
                         .collection("users")
@@ -223,8 +223,8 @@ class _HomeScreenState extends State<HomeScreen> {
                         return Center(
                             child: Image.asset(
                           "assets/images/defaultimage.png",
-                          height: 100.0,
-                          width: 100.0,
+                          height: 25.0,
+                          width: 25.0,
                         ));
                       } else {
                         var len = snapshot.data!.size;
@@ -238,7 +238,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                           child: Image.network(
                             url,
-                            fit: BoxFit.fill,
+                            fit: BoxFit.contain,
                           ),
                         );
                       }

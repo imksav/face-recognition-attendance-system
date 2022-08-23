@@ -37,7 +37,7 @@ def getUserId(users):
           if(user.to_dict()['uid']==user.id):
                current_user_id=user.id
                user_found=True
-               coll = db.collection("users").document(current_user_id).collection('images')
+               coll = db.collection("users").document(current_user_id).collection('images').order_by("createdAt")
                datas = coll.get()
                for data in datas:
                     documentId=data.id
