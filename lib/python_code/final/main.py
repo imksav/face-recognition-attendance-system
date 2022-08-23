@@ -1,13 +1,19 @@
 # python
-
+import csv
 import face_recognition as fr
 import cv2
 import numpy as np
 import os
 from datetime import datetime
 import urllib.request
+import gspread
+from oauth2client.service_account import ServiceAccountCredentials
+import json
 
 
+
+# google sheets api key
+# AIzaSyAFT-43VN5ZEoXdtTSFM1eOxbnZGaMI9zc
 # flutter
 
 import firebase_admin
@@ -79,7 +85,15 @@ def downloadImg(userDict):
         
    
 
-
+# google sheets work
+scopes = [
+'https://www.googleapis.com/auth/spreadsheets',
+'https://www.googleapis.com/auth/drive'
+]
+credentials = ServiceAccountCredentials.from_json_keyfile_name("../attendanceapp/lib/python_code/final/googlesheetsattendanceapp.json", scopes) #access the json key you downloaded earlier 
+file = gspread.authorize(credentials) # authenticate the JSON key with gspread
+sheet = file.open("AttendanceApp")  #open sheet
+sheet = sheet.sheet1 #replace sheet_name with the name that corresponds to yours, e.g, it can be sheet1
 getUserId(users)
 # print("printing userDict", userDict)
 userDictJson = json.dumps(userDict)
@@ -87,6 +101,7 @@ userDictJson = json.dumps(userDict)
 with open('../attendanceapp/lib/python_code/final/userDictJson.json', 'w') as f:
      json.dump(userDict, f)
 downloadImg(userDict)
+
 
 def extractName(userDict):
          for key, value in userDict.items():
@@ -107,6 +122,14 @@ def attendance(name):
                       tStr = time_now.strftime('%H:%M:%S')
                       dStr = time_now.strftime('%d/%m/%Y')
                       f.writelines(f'\n{name},{tStr},{dStr}')
+                      
+
+def postAttendance():
+     with open('../attendanceapp/lib/python_code/final/result/attendance.csv','r')as file:
+          filecontent=csv.reader(file,delimiter=',')
+          for row in filecontent:
+               print(row)
+               sheet.update('A1:C3', [[row[0], row[1]], ["Nothing", "Not"]])
 
 path = "../attendanceapp/lib/python_code/final/train/"
 test_path = "../attendanceapp/lib/python_code/final/test/"
@@ -129,6 +152,7 @@ for _ in images:
 print(known_names)
 
 print(extractName(userDict))
+
 
 # download_images = os.listdir(test_path)
 # print(download_images)
@@ -171,6 +195,8 @@ for test_name in test_image_names:
             attendance(test_name)
             output_img_path = "../attendanceapp/lib/python_code/final/result/" + test_name + ".jpg"
             cv2.imwrite(output_img_path, image)
+            postAttendance()
+            
 
 
         # cv2.imshow("Result", image)
