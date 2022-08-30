@@ -120,5 +120,5 @@ with open("../attendanceapp/lib/python_code/final/resultDictJson.json", 'r') as 
           for key, value in file_contents.items():
                if(key==items):               
                     ref.set({
-                    u'date': value
+                    'date': value
                }, merge = True)
