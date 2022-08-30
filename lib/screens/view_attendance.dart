@@ -3,11 +3,13 @@ import 'dart:convert';
 
 import 'package:flutter/services.dart';
 
+// ignore: must_be_immutable
 class ViewAttendance extends StatefulWidget {
   String? userId;
   ViewAttendance({Key? key, required this.userId}) : super(key: key);
 
   @override
+  // ignore: library_private_types_in_public_api
   _ViewAttendanceState createState() => _ViewAttendanceState();
 }
 
@@ -15,7 +17,7 @@ class _ViewAttendanceState extends State<ViewAttendance> {
   List<dynamic> _items = [];
 
   // // Fetch content from the json file
-  Future<void> readJson() async {
+  Future readJson() async {
     final String response = await rootBundle.loadString(
         '../attendanceapp/lib/python_code/final/resultDictJson.json');
     final data = await json.decode(response);
@@ -27,7 +29,7 @@ class _ViewAttendanceState extends State<ViewAttendance> {
 
   @override
   void initState() {
-    super.initState();
+    // super.initState();
     readJson();
   }
 
