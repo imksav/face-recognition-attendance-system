@@ -66,6 +66,7 @@ flutter:
     - assets/images/
     - lib/python_code/final/result/
     - ../attendanceapp/lib/python_code/final/result/attendance.csv
+    - ../attendanceapp/lib/python_code/final/resultDictJson.json
   #   - images/a_dot_ham.jpeg
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

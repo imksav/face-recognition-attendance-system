@@ -13,7 +13,7 @@ class BottomNavScreen extends StatefulWidget {
 class _BottomNavScreenState extends State<BottomNavScreen> {
   final List _screens = [
     HomeScreen(),
-    ViewAttendance(),
+    // ViewAttendance(),
     const Scaffold(),
     const Scaffold(),
   ];

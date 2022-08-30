@@ -21,6 +21,7 @@ def createDict(current_user_id, date, time):
      # attendance_record_dict[date] += time
      # attendance_record_dict[date] = time
      # attendance_record_dict = dict({date:time})
+     # Details[current_user_id][date] = time
      Details[current_user_id].append(date)
      # print(Details)
      # print(userDict)
@@ -51,7 +52,9 @@ def checkUniqueUserId(users, number_of_lines):
 users = []
 userDict = {}
 attendance_record_dict = {}
+# Details = defaultdict(dict)
 Details = defaultdict(list)
+
 
 # assignments
 number_of_lines = check_number_of_lines()
