@@ -1,7 +1,29 @@
 import csv
 from collections import defaultdict
 import json
+import firebase_admin
+from firebase_admin import credentials, storage
+from firebase_admin import firestore
 
+cred = credentials.Certificate("../attendanceapp/lib/python_code/final/key.json")
+# initalize firebase
+firebase_admin.initialize_app(cred,{'storageBucket':'emailpasswordauth-2b4d2.appspot.com'})
+# reading from the database
+db = firestore.client()
+
+def postToFirebase(current_user_id, date):
+     ref = db.collection("attendance").document(current_user_id)
+     with open("../attendanceapp/lib/python_code/final/resultDictJson.json", 'r') as y:
+          file_contents = json.load(y)
+          print(file_contents)
+
+     for key, value in file_contents.items():
+          ref.set({
+          u'date': value
+     }, merge = True)
+
+
+# real python
 def check_number_of_lines():
      number_of_lines = 0
      for row in open("../attendanceapp/lib/python_code/final/result/attendance.csv"):
@@ -17,12 +39,22 @@ def iterateAttendanceRecord():
                
 def createDict(current_user_id, date, time):
      attendance_record_dict = {}
+     # print("Current User is:: ",current_user_id)
      # print(current_user_id, date, time)
      # attendance_record_dict[date] += time
      # attendance_record_dict[date] = time
      # attendance_record_dict = dict({date:time})
      # Details[current_user_id][date] = time
      Details[current_user_id].append(date)
+     # ref = db.collection("attendance").document(current_user_id)
+     # with open("../attendanceapp/lib/python_code/final/resultDictJson.json", 'r') as y:
+     #      file_contents = json.load(y)
+     #      print(file_contents)
+
+     # for key, value in file_contents.items():
+     #      ref.set({
+     #      u'date': value
+     # }, merge = True)
      # print(Details)
      # print(userDict)
      return Details
@@ -64,11 +96,29 @@ iterateAttendanceRecord()
 checkUniqueUserId(users, number_of_lines)
 
 print("==============================Final Print==============================")
-print(Details)
+# print(Details)
 # print(userDict)
 print("===========================Convert into Json Format===========================")
 userDictJson = json.dumps(Details)
 # print(userDictJson)
+
 with open('../attendanceapp/lib/python_code/final/resultDictJson.json', 'w') as f:
      json.dump(Details, f)
 
+# postToFirebase(current_user_id, date)
+
+# ref = db.collection("attendance").document("id")
+
+with open("../attendanceapp/lib/python_code/final/resultDictJson.json", 'r') as y:
+     file_contents = json.load(y)
+     # print(file_contents)
+     # print(type(file_contents))
+     
+     for items in file_contents:
+          # print(items)
+          ref = db.collection("attendance").document(items)
+          for key, value in file_contents.items():
+               if(key==items):               
+                    ref.set({
+                    u'date': value
+               }, merge = True)
