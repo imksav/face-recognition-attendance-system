@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
@@ -12,66 +14,79 @@ class ViewAttendance extends StatefulWidget {
 }
 
 class _ViewAttendanceState extends State<ViewAttendance> {
-  // final CollectionReference attendance_details =
-  //     FirebaseFirestore.instance.collection('attendance');
-  final base = FirebaseFirestore.instance.collection("attendance").doc(widget.userId).get()
+  Stream? _usersStream;
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.userId.toString()),
+        title: Text("View Attendance"),
         actions: [
           GestureDetector(
             onTap: () {},
             child: Padding(
               padding: const EdgeInsets.only(right: 20.0),
-              child: Icon(Icons.refresh),
+              // child: Icon(Icons.refresh),
             ),
           )
         ],
       ),
       body: StreamBuilder(
-        stream: FirebaseFirestore.instance.collection("attendnace").snapshots(),
-        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-          if (!snapshot.hasData) {
-            return Text("No data");
-          } else {
-            return ListView(
-              children: [
-                Text("Pagal Vaye Mah")
-
-                // getItems(snapshot),
-              ],
-            );
-          }
-        },
-      ),
-
-      // body: StreamBuilder(
-      //     stream: attendance_details.snapshots(),
-      //     builder: (context, AsyncSnapshot<QuerySnapshot> streamSnapshot) {
-      //       if (streamSnapshot.hasData) {
-      //         return ListView.builder(
-      //             itemCount: streamSnapshot.data!.docs.length,
-      //             itemBuilder: (context, index) {
-      //               final DocumentSnapshot documentSnapshot =
-      //                   streamSnapshot.data!.docs[index];
-      //               return ListTile(
-      //                 title: documentSnapshot.id == widget.userId
-      //                     ? Text(documentSnapshot.id.characters.string)
-      //                     : null,
-      //               );
-      //             });
-      //       }
-
-      //       return Center(
-      //         child: CircularProgressIndicator(),
-      //       );
-      //     }),
+          stream: FirebaseFirestore.instance
+              .collection('attendance')
+              .doc(widget.userId)
+              .snapshots(),
+          builder: (BuildContext context, snapshot) {
+            if (snapshot.hasError) {
+              return const Text("Error");
+            }
+            if (snapshot.hasData) {
+              DocumentSnapshot documents = snapshot.data as DocumentSnapshot;
+              print(documents.data());
+              Map attendanceData = documents.data() as Map;
+              List<dynamic> attlist = attendanceData["date"];
+              return ListView.builder(
+                  itemCount: attlist.length,
+                  itemBuilder: ((context, index) {
+                    return ListTile(
+                      title: Container(
+                        width: MediaQuery.of(context).size.width * 0.75,
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [
+                              Colors.purple,
+                              Colors.green,
+                              Colors.blue,
+                              Colors.amber,
+                            ],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          ),
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                        child: Center(
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                              attlist[index].toString(),
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 30.0),
+                            ),
+                          ),
+                        ),
+                      ),
+                    );
+                  }));
+            }
+            return CircularProgressIndicator();
+          }),
     );
-  }
-
-  getItems(AsyncSnapshot<QuerySnapshot> snapshot) {
-    return snapshot.data?.docs.map((doc) => Text(snapshot.toString()));
   }
 }

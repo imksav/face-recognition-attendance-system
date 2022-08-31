@@ -1,3 +1,4 @@
+import 'package:attendanceapp/screens/uaser_data.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -193,6 +194,7 @@ class _SigninScreenState extends State<SigninScreen> {
       await _auth
           .signInWithEmailAndPassword(email: email, password: password)
           .then((uid) => {
+                // Usercred.setUserID="${uid.user!.uid}";                // print(" user cred:  ${uid.user!.uid.toString()}");
                 ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                   content: Text("Login Successfull"),
                   duration: Duration(seconds: 5),
